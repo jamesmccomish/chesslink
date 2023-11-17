@@ -1,6 +1,8 @@
+/* BASIC RAINBOW STYLES */
+
 .container {
     height: 100vh;
-    padding: 0 2rem;
+    padding: 0 20rem;
 }
 
 .main {
@@ -25,8 +27,33 @@
 
 .header_buttons {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 30%;
+    border-left: 1px solid var(--c-gray-600);
+    border-right: 1px solid var(--c-gray-600);
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: auto;
+}
+
+.header_button {
+    display: flex;
     justify-content: center;
-    /* width: 100%; */
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    color: var(--c-text-tertiary);
+    text-decoration: none;
+    transition: 0.25s ease;
+    background-color: #ffffff;
+}
+
+.header_button:hover,
+.header_button:focus,
+.header_button:active {
+    background-color: #bbbbbb;
 }
 
 .layout {
@@ -122,4 +149,76 @@
         width: 100%;
         flex-direction: column;
     }
+}
+
+/* GAMEPLAY */
+
+.box {
+    width: 200;
+    height: 200;
+    /* backgroundcolor: lightgray;
+    justifycontent: center;
+    alignitems: center; */
+}
+
+.section_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+.section_info_title {
+    font-size: 2rem; /* Increase the font size */
+    font-weight: bold;
+    text-transform: uppercase; /* Make the text uppercase */
+    color: antiquewhite;
+}
+
+.section_info_text {
+    font-size: 1rem; /* Increase the font size */
+    font-weight: normal;
+    font-style: italic;
+    color: antiquewhite;
+    width: 50%;
+    text-align: center;
+}
+
+.info_field_text {
+    font-size: 2rem; /* Increase the font size */
+    font-weight: bold;
+    color: antiquewhite;
+}
+
+.player_section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem;
+    border-bottom: 1px solid #ffffff; /* Add a thin white line at the bottom */
+    /* background-color: aqua; */
+}
+
+.top_section_right {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.matches_section {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.matches_section .card {
+    flex: 0 0 auto;
+    width: 200px;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
