@@ -1,0 +1,13 @@
+.container {
+    flex: 1;
+    /* justifycontent: center;
+    alignitems: center; */
+}
+
+.box {
+    width: 200;
+    height: 200;
+    /* backgroundcolor: lightgray;
+    justifycontent: center;
+    alignitems: center; */
+}
