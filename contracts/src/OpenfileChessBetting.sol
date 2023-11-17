@@ -3,7 +3,11 @@ pragma solidity 0.8.19;
 
 import {IPlayer} from "./interfaces/IPlayer.sol";
 
-contract OpenfileChessBetting {
+import {OpenfileChessChainlinkFunction, FunctionsRequest} from "./OpenfileChessChainlinkFunction.sol";
+
+contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
+    using FunctionsRequest for FunctionsRequest.Request;
+
     /// -----------------------------------------------------------------------
     /// Game Storage
     /// -----------------------------------------------------------------------
@@ -56,7 +60,9 @@ contract OpenfileChessBetting {
     /// Constructor
     /// -----------------------------------------------------------------------
 
-    constructor() {
+    constructor(address _router, string memory _remoteCodeLocation, uint64 _subscriptionId)
+        OpenfileChessChainlinkFunction(_router, _remoteCodeLocation, _subscriptionId)
+    {
         // TODO
     }
 
@@ -78,6 +84,53 @@ contract OpenfileChessBetting {
     /// -----------------------------------------------------------------------
 
     // TODO create match
+    /**
+     * @notice Creates a new match
+     * @param _whitePlayerName Name of the white player // ! limit on string length here
+     * @param _blackPlayerName Name of the black player // ! limit on string length here
+     * @param _startTime Start time of the match
+     * @param _description Description of the match
+     */
+    function createMatch(
+        string memory _whitePlayerName,
+        string memory _blackPlayerName,
+        uint256 _startTime,
+        string memory _description
+    ) public {
+        // TODO call function to verify match is in play with current players
+
+        FunctionsRequest.Request memory req;
+        //req.init(format req);
+
+        string[] memory args = new string[](1);
+        args[0] = "1234";
+        req.setArgs(args);
+
+        // Send req to chainlink fn
+        bytes32 assignedReqID = _sendRequest(req.encodeCBOR(), subscriptionId, 100000, "fun-polygon-mumbai-1"); // TODO fix gasLimit
+
+        // Set match details as pending
+    }
+
+    function _createMatch(bytes32 matchId) internal {
+        // TODO finish this
+
+        matches[matchId].status = Status.ACTIVE;
+    }
+
+    /**
+     * @notice Callback that is invoked once the DON has resolved the request or hit an error
+     *
+     * @param requestId The request ID, returned by sendRequest()
+     * @param response Aggregated response from the user code
+     * @param err Aggregated error from the user code or from the execution pipeline
+     * Either response or error parameter will be set, but never both
+     */
+    function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
+        // TODO finish this & correct
+
+        matches[keccak256(response)].status = Status.ACTIVE;
+    }
 
     // TODO settle match
 
