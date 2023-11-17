@@ -6,6 +6,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { arbitrum, goerli, mainnet, optimism, polygon, base, zora } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { Layout } from "../components/Layout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
@@ -33,13 +34,17 @@ const wagmiConfig = createConfig({
     webSocketPublicClient,
 });
 
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains}>
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
+                <QueryClientProvider client={queryClient}>
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                </QueryClientProvider>
             </RainbowKitProvider>
         </WagmiConfig>
     );
