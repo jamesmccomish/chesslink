@@ -1,22 +1,21 @@
 import React from "react";
 import styles from "../styles/Home.module.css";
 
+import { useQuery } from "@tanstack/react-query";
+
 import { LichessClient } from "../services/api/lichess/client";
 
 const lichessClient = new LichessClient();
 
 export const Player = () => {
-    const [account, setAccount] = React.useState(null);
+    const { data, isLoading, error } = useQuery({
+        queryKey: "todos",
+        //queryFn: () => lichessClient.getUser("jamco535"),
+        queryFn: () => lichessClient.getGame("q7ZvsdUF"), // api example finished game
+        // queryFn: () => lichessClient.getCurrentGame("xpmMxfld"),
+    });
 
-    React.useEffect(() => {
-        const fetchAccount = async () => {
-            const result = await lichessClient.getUser("jamco535");
-            setAccount(result);
-        };
-
-        fetchAccount();
-    }, []);
-    console.log({ account });
+    console.log({ data });
 
     return (
         <div className={styles.container}>
