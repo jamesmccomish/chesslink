@@ -1,7 +1,23 @@
 import React from "react";
 import styles from "../styles/Home.module.css";
 
+import { LichessClient } from "../services/api/lichess/client";
+
+const lichessClient = new LichessClient();
+
 export const Player = () => {
+    const [account, setAccount] = React.useState(null);
+
+    React.useEffect(() => {
+        const fetchAccount = async () => {
+            const result = await lichessClient.getUser("jamco535");
+            setAccount(result);
+        };
+
+        fetchAccount();
+    }, []);
+    console.log({ account });
+
     return (
         <div className={styles.container}>
             <div className={styles.player_section}>
