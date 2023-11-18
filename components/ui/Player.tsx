@@ -1,9 +1,9 @@
 import React from "react";
-import styles from "../styles/Home.module.css";
+import styles from "./styles/Home.module.css";
 
 import { useQuery } from "@tanstack/react-query";
 
-import { LichessClient } from "../services/api/lichess/client";
+import { LichessClient } from "../../services/api/lichess/client";
 
 const lichessClient = new LichessClient();
 

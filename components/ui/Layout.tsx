@@ -1,6 +1,6 @@
 import React from "react";
 import { HeaderBar } from "./Header";
-import styles from "../styles/Home.module.css";
+import styles from "./styles/Home.module.css";
 
 export const Layout = ({ children }) => {
     return (
