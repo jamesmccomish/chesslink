@@ -17,11 +17,11 @@ contract OpenfileChessChainlinkFunction is FunctionsClient {
     bytes public latestResponse;
     bytes public latestError;
 
-    // We store the location where the function is hosted
-    string public remoteCodeLocation;
+    // The code to run on the chainlink function
+    string public inlineFunctionCode;
 
-    constructor(address router, string memory _remoteCodeLocation, uint64 _subscriptionId) FunctionsClient(router) {
-        remoteCodeLocation = _remoteCodeLocation;
+    constructor(address router, string memory _inlineFunctionCode, uint64 _subscriptionId) FunctionsClient(router) {
+        inlineFunctionCode = _inlineFunctionCode;
 
         subscriptionId = _subscriptionId;
     }

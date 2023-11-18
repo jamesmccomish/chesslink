@@ -60,8 +60,8 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
     /// Constructor
     /// -----------------------------------------------------------------------
 
-    constructor(address _router, string memory _remoteCodeLocation, uint64 _subscriptionId)
-        OpenfileChessChainlinkFunction(_router, _remoteCodeLocation, _subscriptionId)
+    constructor(address _router, string memory _sourceCode, uint64 _subscriptionId)
+        OpenfileChessChainlinkFunction(_router, _sourceCode, _subscriptionId)
     {
         // TODO
     }

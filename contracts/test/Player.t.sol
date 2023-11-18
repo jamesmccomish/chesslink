@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import { BasicTestConfig } from "./config/BasicTestConfig.t.sol";
+import {BasicTestConfig} from "./config/BasicTestConfig.t.sol";
 
-import { Player } from "../src/Player.sol";
+import {Player} from "../src/Player.sol";
 
 contract PlayerTest is BasicTestConfig {
     Player public player;
