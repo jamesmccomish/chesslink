@@ -10,47 +10,47 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Providers from "../components/providers/providers";
 
-// const { chains, publicClient, webSocketPublicClient } = configureChains(
-//     [
-//         mainnet,
-//         polygon,
-//         optimism,
-//         arbitrum,
-//         base,
-//         zora,
-//         ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
-//     ],
-//     [publicProvider()]
-// );
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+    [
+        mainnet,
+        polygon,
+        optimism,
+        arbitrum,
+        base,
+        zora,
+        ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
+    ],
+    [publicProvider()]
+);
 
-// const { connectors } = getDefaultWallets({
-//     appName: "RainbowKit App",
-//     projectId: "YOUR_PROJECT_ID",
-//     chains,
-// });
+const { connectors } = getDefaultWallets({
+    appName: "RainbowKit App",
+    projectId: "YOUR_PROJECT_ID",
+    chains,
+});
 
-// const wagmiConfig = createConfig({
-//     autoConnect: true,
-//     connectors,
-//     publicClient,
-//     webSocketPublicClient,
-// });
+const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors,
+    publicClient,
+    webSocketPublicClient,
+});
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
-        // <WagmiConfig config={wagmiConfig}>
-        //     <RainbowKitProvider chains={chains}>
-        <Providers>
-            <QueryClientProvider client={queryClient}>
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
-            </QueryClientProvider>
-        </Providers>
-        //     </RainbowKitProvider>
-        // </WagmiConfig>
+        <WagmiConfig config={wagmiConfig}>
+            <RainbowKitProvider chains={chains}>
+                <Providers>
+                    <QueryClientProvider client={queryClient}>
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
+                    </QueryClientProvider>
+                </Providers>
+            </RainbowKitProvider>
+        </WagmiConfig>
     );
 }
 

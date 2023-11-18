@@ -11,10 +11,10 @@ import { Web3AuthModalPack } from "@safe-global/auth-kit";
 //import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
 //import { MetaTransactionData, MetaTransactionOptions } from "@safe-global/safe-core-sdk-types";
 
-import { initialChain } from "../../utils/chains";
+import { initialChain } from "../utils/chains";
 //import usePolling from "src/hooks/usePolling";
-import Chain from "../../utils/models/chain";
-import getChain from "../../utils/get-chain";
+import Chain from "../utils/models/chain";
+import getChain from "../utils/get-chain";
 // import getMoneriumInfo, { MoneriumInfo } from "src/utils/getMoneriumInfo";
 // import isMoneriumRedirect from "src/utils/isMoneriumRedirect";
 
