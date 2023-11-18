@@ -1,4 +1,4 @@
-//import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "./styles/Home.module.css";
@@ -13,7 +13,7 @@ export const Home: NextPage = () => {
             </Head>
 
             <main className={styles.main}>
-                {/* <ConnectButton /> */}
+                <ConnectButton />
 
                 <h1 className={styles.title}>
                     Welcome to <a href="">RainbowKit</a> + <a href="">wagmi</a> + <a href="matches">Next.js!</a>

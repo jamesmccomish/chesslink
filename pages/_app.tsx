@@ -3,25 +3,15 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { arbitrum, goerli, mainnet, optimism, polygon, base, zora } from "wagmi/chains";
+import { goerli, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { Layout } from "../components/ui/Layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Providers from "../components/providers/providers";
+import { createPublicClient, http } from "viem";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-    [
-        mainnet,
-        polygon,
-        optimism,
-        arbitrum,
-        base,
-        zora,
-        ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
-    ],
-    [publicProvider()]
-);
+const { chains, publicClient, webSocketPublicClient } = configureChains([polygonMumbai], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
     appName: "RainbowKit App",

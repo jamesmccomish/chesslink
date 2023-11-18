@@ -2,7 +2,7 @@
 
 .container {
     height: 100vh;
-    padding: 0 20rem;
+    padding: 0 10rem;
 }
 
 .main {
@@ -193,6 +193,7 @@
 
 .player_section {
     display: flex;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
     padding: 4rem;
@@ -221,4 +222,14 @@
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.matches_page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+    border-bottom: 1px solid #ffffff; /* Add a thin white line at the bottom */
+    /* background-color: aqua; */
 }
