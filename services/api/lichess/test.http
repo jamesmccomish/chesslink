@@ -1,0 +1,6 @@
+### 
+GET https://lichess.org/api/user/jamtest/current-game
+Content-Type: application/json
+
+###
+GET https://lichess.org/api/game/q7ZvsdUF

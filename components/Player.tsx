@@ -11,8 +11,8 @@ export const Player = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: "todos",
         //queryFn: () => lichessClient.getUser("jamco535"),
-        queryFn: () => lichessClient.getGame("q7ZvsdUF"), // api example finished game
-        // queryFn: () => lichessClient.getCurrentGame("xpmMxfld"),
+        //queryFn: () => lichessClient.getGame("q7ZvsdUF"), // api example finished game
+        queryFn: () => lichessClient.getCurrentGame("jamtest"),
     });
 
     console.log({ data });

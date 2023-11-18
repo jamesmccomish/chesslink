@@ -21,21 +21,19 @@ export class LichessClient {
     private fetcher: Function
 
     constructor(private readonly token?: string) {
-        this.fetcher = (endpoint: string, post?: boolean, body?: URLSearchParams) =>
-            fetcher({ endpoint, token: this.token, post, body })
-
-
+        this.fetcher = (params: any) =>
+            fetcher(params)
     }
 
     async getUser(user: string): Promise<any> {
-        return this.fetcher(`/user/${user}`)
+        return this.fetcher({ endpoint: `/user/${user}` })
     }
 
     async getCurrentGame(user: string): Promise<any> {
-        return this.fetcher(`/user/${user}/current-game`)
+        return this.fetcher({ endpoint: `/user/${user}/current-game` })
     }
 
     async getGame(gameId: string): Promise<any> {
-        return this.fetcher(`/game/${gameId}`)
+        return this.fetcher({ endpoint: `/game/${gameId}` })
     }
 }
