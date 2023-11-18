@@ -9,6 +9,18 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
     using FunctionsRequest for FunctionsRequest.Request;
 
     /// -----------------------------------------------------------------------
+    /// Game Errors and Events
+    /// -----------------------------------------------------------------------
+
+    event Test(bytes32 id, bytes res, bytes err);
+
+    error FailedToCreateMatch();
+
+    error FailedToSettleMatch();
+
+    error MatchAlreadyExists();
+
+    /// -----------------------------------------------------------------------
     /// Game Storage
     /// -----------------------------------------------------------------------
 
@@ -36,16 +48,23 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
         Status status;
         Result result;
         string description; // Description of the match
+        string lichessId; // ID of the match on lichess
     }
-
-    /// @notice Details for this match
-    MatchDetails public matchDetails;
 
     /// @notice ID of the ERC1155 token representing ownership
     uint256 internal constant PLAYER_TOKEN_ID = 0;
 
     /// @notice ID of the ERC1155 token representing rewards
     uint256 internal constant REWARD_TOKEN_ID = 1;
+
+    /// @notice A simple index for getting all matches
+    uint256 matchCounter;
+
+    /// @notice A mapping to easily get matches from counter
+    mapping(uint256 => bytes32) public matchIdToMatchHashMapping;
+
+    /// @notice Mapping of each matchId to the chainlink request ID which deployed it
+    mapping(bytes32 => uint256) public requestIdToMatchIdMapping;
 
     /**
      * @notice Mapping of each match's details
@@ -97,26 +116,57 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
         uint256 _startTime,
         string memory _description
     ) public {
-        // TODO call function to verify match is in play with current players
+        // TODO check players are deployed and revert if not
 
         FunctionsRequest.Request memory req;
-        //req.init(format req);
+        req.initializeRequestForInlineJavaScript(inlineFunctionCode);
 
-        string[] memory args = new string[](1);
-        args[0] = "1234";
+        string[] memory args = new string[](2);
+        args[0] = _whitePlayerName;
+        args[1] = _blackPlayerName;
         req.setArgs(args);
 
         // Send req to chainlink fn
         bytes32 assignedReqID = _sendRequest(req.encodeCBOR(), subscriptionId, 100000, "fun-polygon-mumbai-1"); // TODO fix gasLimit
 
+        requestIdToMatchIdMapping[assignedReqID] = matchCounter;
+
         // Set match details as pending
+        bytes32 matchHash = keccak256(abi.encodePacked(_whitePlayerName, _blackPlayerName, _startTime));
+
+        matchIdToMatchHashMapping[matchCounter++] = matchHash;
+
+        matches[matchHash] = MatchDetails({
+            player1: IPlayer(players[keccak256(abi.encode(_whitePlayerName))]),
+            player2: IPlayer(players[keccak256(abi.encode(_blackPlayerName))]),
+            totalStake: 0,
+            startTime: _startTime,
+            status: Status.AUTHORIZED,
+            result: Result.DRAW,
+            description: _description,
+            lichessId: ""
+        });
     }
 
-    function _createMatch(bytes32 matchId) internal {
-        // TODO finish this
+    function _createMatch(bytes32 requestId, string memory lichessId) internal {
+        // Linking the request ID to the match ID, and updating the status of that match
+        bytes32 matchHash = matchIdToMatchHashMapping[requestIdToMatchIdMapping[requestId]];
 
-        matches[matchId].status = Status.ACTIVE;
+        matches[matchHash].status = Status.ACTIVE;
+        matches[matchHash].lichessId = lichessId;
     }
+
+    // TODO settle match
+
+    /// -----------------------------------------------------------------------
+    /// Bet Functions
+    /// -----------------------------------------------------------------------
+
+    // TODO bet on match
+
+    /// -----------------------------------------------------------------------
+    /// Chainlink Function Handlers
+    /// -----------------------------------------------------------------------
 
     /**
      * @notice Callback that is invoked once the DON has resolved the request or hit an error
@@ -127,16 +177,14 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
      * Either response or error parameter will be set, but never both
      */
     function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
-        // TODO finish this & correct
+        emit Test(requestId, response, err);
 
-        matches[keccak256(response)].status = Status.ACTIVE;
+        if (err.length > 0) {
+            revert FailedToCreateMatch();
+        }
+
+        string memory lichessId = abi.decode(response, (string));
+
+        _createMatch(requestId, lichessId);
     }
-
-    // TODO settle match
-
-    /// -----------------------------------------------------------------------
-    /// Bet Functions
-    /// -----------------------------------------------------------------------
-
-    // TODO bet on match
 }
