@@ -4,7 +4,7 @@ import styles from "./styles/Home.module.css";
 export const HeaderBar = () => {
     return (
         <div className={styles.header_bar}>
-            <h1 className={styles.title}>My App</h1>
+            <h1 className={styles.title}>Chesslink</h1>
             <div className={styles.header_buttons}>
                 <a href="/" className={styles.header_button}>
                     Home

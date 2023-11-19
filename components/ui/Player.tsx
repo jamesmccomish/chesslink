@@ -28,9 +28,11 @@ export const Player = () => {
                     <p className={styles.section_info_text}>Deploy your own player contract, or check out your stats</p>
                 </div>
                 <div className={styles.top_section_right}>
-                    <p className={styles.info_field_text}>Contract:</p>
-                    <p className={styles.info_field_text}>Holders:</p>
-                    <p className={styles.info_field_text}>Matches:</p>
+                    {/* // TODO link to api and get deployed player for connected address */}
+                    <span className={styles.info_field_text}>Contract:</span>
+                    <span className={styles.section_info_text}>0x508d15a8A798c72a33557ddE529209ff5c9DCfb8</span>
+                    <p className={styles.info_field_text}>Holders: 1</p>
+                    <p className={styles.info_field_text}>Matches: 1</p>
                 </div>
             </div>
 
@@ -42,7 +44,7 @@ export const Player = () => {
                 <div className={styles.section_info}>
                     <div className={styles.matches_section}>
                         <div className={styles.card}>
-                            {data ? (
+                            {data && data.Termination != "Abandoned" ? (
                                 <div
                                     style={{
                                         display: "flex",
