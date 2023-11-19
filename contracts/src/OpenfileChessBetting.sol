@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import {IPlayer} from "./interfaces/IPlayer.sol";
+import {Player} from "./Player.sol";
 
 import {OpenfileChessChainlinkFunction, FunctionsRequest} from "./OpenfileChessChainlinkFunction.sol";
 
@@ -41,14 +41,20 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
     /// @notice Struct defining the match details
     // TODO track all betters on the match
     struct MatchDetails {
-        IPlayer player1; // Player contract address of player 1
-        IPlayer player2; // Player contract address of player 2
+        Player player1; // Player contract address of player 1
+        Player player2; // Player contract address of player 2
         uint256 totalStake;
         uint256 startTime;
         Status status;
         Result result;
         string description; // Description of the match
         string lichessId; // ID of the match on lichess
+        address[] betters;
+    }
+
+    struct Bet {
+        address player;
+        uint256 amount;
     }
 
     /// @notice ID of the ERC1155 token representing ownership
@@ -71,6 +77,8 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
      * @dev The key is the hash of the players and start time: keccak256(abi.encodePacked(whitePlayerName, blackPlayerName, startTime))
      */
     mapping(bytes32 => MatchDetails) public matches;
+
+    mapping(bytes32 => mapping(address => Bet)) public bets;
 
     /// @notice Mapping of each player contract by hash of username
     mapping(bytes32 => address) public players;
@@ -95,7 +103,11 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
      * @param _tokenUris URIs of the tokens to mint
      */
     function createPlayer(string memory _name, string[] memory _tokenUris) public {
-        // TODO
+        // Create the player contract
+        Player player = new Player(address(this), _name, _tokenUris);
+
+        // Store the player contract address
+        players[keccak256(abi.encode(_name))] = address(player);
     }
 
     /// -----------------------------------------------------------------------
@@ -116,7 +128,14 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
         uint256 _startTime,
         string memory _description
     ) public {
-        // TODO check players are deployed and revert if not
+        // Check players are deployed and deploy if not
+        if (players[keccak256(abi.encode(_whitePlayerName))] == address(0)) {
+            createPlayer(_whitePlayerName, new string[](0));
+        }
+
+        if (players[keccak256(abi.encode(_blackPlayerName))] == address(0)) {
+            createPlayer(_blackPlayerName, new string[](0));
+        }
 
         FunctionsRequest.Request memory req;
         req.initializeRequestForInlineJavaScript(inlineFunctionCode);
@@ -137,14 +156,15 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
         matchIdToMatchHashMapping[matchCounter++] = matchHash;
 
         matches[matchHash] = MatchDetails({
-            player1: IPlayer(players[keccak256(abi.encode(_whitePlayerName))]),
-            player2: IPlayer(players[keccak256(abi.encode(_blackPlayerName))]),
+            player1: Player(players[keccak256(abi.encode(_whitePlayerName))]),
+            player2: Player(players[keccak256(abi.encode(_blackPlayerName))]),
             totalStake: 0,
             startTime: _startTime,
             status: Status.AUTHORIZED,
             result: Result.DRAW,
             description: _description,
-            lichessId: ""
+            lichessId: "",
+            betters: new address[](0)
         });
     }
 
@@ -156,13 +176,70 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
         matches[matchHash].lichessId = lichessId;
     }
 
+    function tmpCreateMatch(
+        string memory _whitePlayerName,
+        string memory _blackPlayerName,
+        uint256 _startTime,
+        string memory _description
+    ) public {
+        // Check players are deployed and deploy if not
+        if (players[keccak256(abi.encode(_whitePlayerName))] == address(0)) {
+            createPlayer(_whitePlayerName, new string[](0));
+        }
+
+        if (players[keccak256(abi.encode(_blackPlayerName))] == address(0)) {
+            createPlayer(_blackPlayerName, new string[](0));
+        }
+
+        // Set match details as pending
+        bytes32 matchHash = keccak256(abi.encodePacked(_whitePlayerName, _blackPlayerName, _startTime));
+
+        matchIdToMatchHashMapping[matchCounter++] = matchHash;
+
+        matches[matchHash] = MatchDetails({
+            player1: Player(players[keccak256(abi.encode(_whitePlayerName))]),
+            player2: Player(players[keccak256(abi.encode(_blackPlayerName))]),
+            totalStake: 0,
+            startTime: _startTime,
+            status: Status.AUTHORIZED,
+            result: Result.DRAW,
+            description: _description,
+            lichessId: "",
+            betters: new address[](0)
+        });
+    }
+
     // TODO settle match
+
+    function getAllMatches() public view returns (MatchDetails[] memory) {
+        MatchDetails[] memory allMatches = new MatchDetails[](matchCounter);
+
+        for (uint256 i = 0; i < matchCounter; i++) {
+            allMatches[i] = matches[matchIdToMatchHashMapping[i]];
+        }
+
+        return allMatches;
+    }
 
     /// -----------------------------------------------------------------------
     /// Bet Functions
     /// -----------------------------------------------------------------------
 
-    // TODO bet on match
+    // ! TODO restrictions should be added to this function
+    function betOnMatch(address _player, uint256 _matchId) public payable {
+        bytes32 matchHash = matchIdToMatchHashMapping[_matchId];
+
+        // TODO Use waaay less storage this is bad
+        matches[matchHash].totalStake += msg.value;
+        matches[matchHash].betters.push(msg.sender);
+        bets[matchHash][msg.sender] = Bet({player: _player, amount: msg.value});
+    }
+
+    function getBetters(uint256 _matchId) public view returns (address[] memory) {
+        bytes32 matchHash = matchIdToMatchHashMapping[_matchId];
+
+        return matches[matchHash].betters;
+    }
 
     /// -----------------------------------------------------------------------
     /// Chainlink Function Handlers
