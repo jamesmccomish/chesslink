@@ -6,7 +6,7 @@ import { Match, useMatches } from "../hooks/use-matches";
 import { usePlayer } from "../hooks/use-player";
 import { useBetOnMatch } from "../hooks/use-bet";
 
-const MatchCard = ({ match }: { match: Match }) => {
+const MatchCard = ({ match, makeBet }: { match: Match; makeBet: (betCallback: any) => any }) => {
     return (
         <div
             style={{
@@ -34,7 +34,10 @@ const MatchCard = ({ match }: { match: Match }) => {
                 }}
             >
                 <p style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%" }}>{match?.player1}</p>
-                <button style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%", margin: "8px" }}>
+                <button
+                    onClick={() => makeBet(match?.player1)}
+                    style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%", margin: "8px" }}
+                >
                     {"BET"}
                 </button>
             </div>
@@ -50,7 +53,10 @@ const MatchCard = ({ match }: { match: Match }) => {
                 }}
             >
                 <p style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%" }}>{match?.player2}</p>
-                <button style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%", margin: "8px" }}>
+                <button
+                    onClick={() => makeBet(match?.player2)}
+                    style={{ fontSize: "14px", color: "#7f8c9b", lineHeight: "150%", margin: "8px" }}
+                >
                     {"BET"}
                 </button>
             </div>
@@ -60,20 +66,20 @@ const MatchCard = ({ match }: { match: Match }) => {
 
 export const Matches = () => {
     const { data: matches, isLoading } = useMatches();
-    const {write: bet} = useBetOnMatch();
+    const { write: bet } = useBetOnMatch();
 
-
-    console.log({ matches });
-
-    const [m, setM] = React.useState<Match[]>();
+    const [loadedMatches, setloadedMatches] = React.useState<Match[]>();
 
     React.useEffect(() => {
-        if (!isLoading) setM(matches);
+        if (!isLoading) setloadedMatches(matches);
     }, [isLoading]);
 
-    const b = React.useCallback(() => {
-        
-
+    const betCallback = React.useCallback(
+        (a: any) => {
+            bet({ args: [a, BigInt(1)] });
+        },
+        [bet]
+    );
 
     return (
         <div className={styles.container}>
@@ -83,11 +89,11 @@ export const Matches = () => {
                     <p className={styles.section_info_text}>Check out all live matches and bet 0.1eth!</p>
                 </div>
                 <div className={styles.matches_list}>
-                    {!m ? (
+                    {!loadedMatches ? (
                         <p>Loading...</p>
                     ) : (
                         matches?.map((m) => {
-                            return <MatchCard match={m} />;
+                            return <MatchCard match={m} makeBet={betCallback} />;
                         })
                     )}
                 </div>

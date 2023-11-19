@@ -1,32 +1,30 @@
-import { Address, useContractRead } from 'wagmi';
+import { Address, useContractWrite } from 'wagmi';
 import { OPENFILE_CHESS_BETTING_ABI } from '../utils/abis/openfile-chess-betting';
 import { OPENFILE_CHESS_BETTING_CONTRACT_ADDRESS } from '../utils/abis/constants';
 
 import type { AbiParametersToPrimitiveTypes, ExtractAbiFunction, ExtractAbiFunctionNames, Abi } from 'abitype'
 
-
 type FunctionNames = ExtractAbiFunctionNames<typeof OPENFILE_CHESS_BETTING_ABI, 'view'>
 
-export type MatchesInputTypes = AbiParametersToPrimitiveTypes<
-    ExtractAbiFunction<typeof OPENFILE_CHESS_BETTING_ABI, 'getAllMatches'>['inputs']
+type BetInputTypes = AbiParametersToPrimitiveTypes<
+    ExtractAbiFunction<typeof OPENFILE_CHESS_BETTING_ABI, 'betOnMatch'>['inputs']
 >
 
-export type MatchesOutputTypes = AbiParametersToPrimitiveTypes<
-    ExtractAbiFunction<typeof OPENFILE_CHESS_BETTING_ABI, 'getAllMatches'>['outputs']
+type BetOutputTypes = AbiParametersToPrimitiveTypes<
+    ExtractAbiFunction<typeof OPENFILE_CHESS_BETTING_ABI, 'betOnMatch'>['outputs']
 >
 
-export type Match = MatchesOutputTypes[0]
-
-export const useMatches = () => {
-    const { data, isError, isLoading } = useContractRead({
+export const useBetOnMatch = () => {
+    const { data, isError, isLoading, write } = useContractWrite({
         address: OPENFILE_CHESS_BETTING_CONTRACT_ADDRESS,
         abi: OPENFILE_CHESS_BETTING_ABI,
-        functionName: 'getAllMatches',
+        functionName: 'betOnMatch',
     })
 
     return {
         data,
         isError,
         isLoading,
+        write,
     }
 }
