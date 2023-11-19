@@ -10,9 +10,7 @@ const lichessClient = new LichessClient();
 
 export const Player = () => {
     const { data, isLoading, error } = useQuery({
-        queryKey: "todos",
-        //queryFn: () => lichessClient.getUser("jamco535"),
-        //queryFn: () => lichessClient.getGame("q7ZvsdUF"), // api example finished game
+        queryKey: "current-game",
         queryFn: () => lichessClient.getCurrentGame("jamtest"),
     });
 

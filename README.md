@@ -1,29 +1,21 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](https://github.com/rainbow-me/rainbowkit/tree/main/packages/create-rainbowkit).
+## Chesslink
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+An NFT based betting platform for chess matches. Players can deploy an NFT linked to their Lichess account, others can then mint that NFT to bet on their matches.
 
 ## Learn More
 
-To learn more about this stack, take a look at the following resources:
+[demo video](https://www.loom.com/share/39842ddfce9343129217c5366ded62f0?sid=c0606aa7-1bb9-4be3-abf7-a269b13d3826)
 
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
+-   [Minimal Lichess API](/services/api/lichess/client.ts) to get games and check details
+-   [Chainlink function contract](/contracts/src/OpenfileChessBetting.sol) to verify the current match is valid and
+-   [Betting game contract](https://mumbai.polygonscan.com/address/0x79bcb55f94889abd643493466aab1a1117a831e2) and [Player NFTs](https://mumbai.polygonscan.com/address/0x508d15a8a798c72a33557dde529209ff5c9dcfb8#readContract) deployed on Polygon
 
 You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Limits
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+-   Chainlink function is called to verify creation of game but nothing is settled for the result yet
+-   [Current funtion response](https://functions.chain.link/mumbai/797) is failing, but [earlier](https://mumbai.polygonscan.com/tx/0x1cf075bf6f26ac69595f28dc886c6f225bf086ac96f9ae2a5eb4d22e75bf89b5#eventlog) one was returning correctly
+-   Few restrictions are in place for betting, so users don't need to hold the NFT to bet
+-   Would be better to determine the outcome of a full match - this demo just does one game which may be likely to result in a draw
+-   Janky af UI

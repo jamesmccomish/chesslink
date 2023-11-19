@@ -103,7 +103,7 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
      * @param _tokenUris URIs of the tokens to mint
      */
     function createPlayer(string memory _name, string[] memory _tokenUris) public {
-        // Create the player contract
+        // Create the player contract // TODO make proxy
         Player player = new Player(address(this), _name, _tokenUris);
 
         // Store the player contract address
@@ -114,7 +114,6 @@ contract OpenfileChessBetting is OpenfileChessChainlinkFunction {
     /// Match Functions
     /// -----------------------------------------------------------------------
 
-    // TODO create match
     /**
      * @notice Creates a new match
      * @param _whitePlayerName Name of the white player // ! limit on string length here
